@@ -37,8 +37,14 @@ function App() {
   }
 
   const handleUpdateUser = (message) => {
-    const { user: newUser } = message
-    setUsers([...users, newUser])
+    const { user: newUser } = message;
+    setUsers([...users, newUser]);
+  }
+
+  const handleLeaveUser = (message) => {
+    const { user: leaveUser } = message;
+    const updatedUserList = users.filter(user => user.id !== leaveUser.id);
+    setUsers(updatedUserList);
   }
 
   useEffect(() => {
@@ -70,6 +76,7 @@ function App() {
         handleUpdateUser(message);
         break;
       case "leave":
+        handleLeaveUser(message);
         break;
       default:
         break;
