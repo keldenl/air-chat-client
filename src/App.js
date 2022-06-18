@@ -6,15 +6,16 @@ import { MyUserProfile } from './components/MyUserProfile';
 import './App.css';
 
 function App() {
+  // WebSocket State
   const webSocket = useRef(null);
   const [socketOpen, setSocketOpen] = useState(false);
   const [socketMessages, setSocketMessages] = useState([]);
 
-  // App state
+  // App State
   const [myData, setMyData] = useState({});
   const [users, setUsers] = useState([]);
 
-
+  // All WebSocket Handlers
   const handleConnect = (message) => {
     const { name, ip } = message;
     setSocketOpen(true);
@@ -83,6 +84,16 @@ function App() {
     webSocket.current.send(JSON.stringify(data));
   }
 
+  const usersDisplay = users.length > 0 ?
+    <ul>
+      {users.map(user => <li key={user.id}>
+        <User data={user} />
+      </li>)}
+
+    </ul> :
+    <p>No devices nearby</p>
+
+
   return (
     <div className="App">
       <header className="App-header">Air Chat</header>
@@ -90,15 +101,7 @@ function App() {
       {socketOpen ? <p>Socket opened</p> : undefined}
       <div>
         <h2>Nearby Devices</h2>
-        {users.length > 0 ?
-          <ul>
-            {users.map(user => <li key={user.id}>
-              <User data={user} />
-            </li>)}
-
-          </ul> :
-          <p>No devices nearby</p>
-        }
+        {usersDisplay}
       </div>
       <MyUserProfile myData={myData} />
     </div>
