@@ -5,9 +5,22 @@ import './App.css';
 function User({ data }) {
   const { id, ip, userName } = data;
   return (
-    <li>
+    <div>
+
       <p>{userName}</p>
-    </li>
+    </div>
+  )
+}
+
+function MyUserProfile({ myData }) {
+  const myUserExists = myData != null && Object.keys(myData).length > 0;
+  return (
+    myUserExists ?
+      <div>
+        <p>You as known as {myData.name}</p>
+        <p>Your IP is {myData.ip}</p>
+      </div>
+      : undefined
   )
 }
 
@@ -81,6 +94,7 @@ function App() {
       default:
         break;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketMessages])
 
   const sendMessage = () => {
@@ -97,18 +111,15 @@ function App() {
         <h2>Nearby Devices</h2>
         {users.length > 0 ?
           <ul>
-            {users.map(user => <User key={user.id} data={user} />)}
+            {users.map(user => <li key={user.id}>
+              <User data={user} />
+            </li>)}
 
           </ul> :
           <p>No devices nearby</p>
         }
       </div>
-      {Object.keys(myData).length > 0 ?
-        <div>
-          <p>You as known as {myData.name}</p>
-          <p>Your IP is {myData.ip}</p>
-        </div>
-        : undefined}
+      <MyUserProfile myData={myData} />
     </div>
   );
 }
