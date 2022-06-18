@@ -5,11 +5,11 @@ export function User({ data, offerTo, setOfferTo }) {
     const { id, ip, userName } = data;
 
     const onSetOfferTo = () => {
-        setOfferTo(id);
+        setOfferTo(userName);
     }
 
     return (
-        <div onClick={onSetOfferTo} className={`${offerTo === id ? 'user-selected' : ''} user`}>
+        <div onClick={onSetOfferTo} className={`${offerTo === userName ? 'user-selected' : ''} user`}>
             <p>{userName}</p>
         </div>
     )

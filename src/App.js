@@ -107,19 +107,22 @@ function App() {
   const handleOffer = ({ offer, name }) => {
     setConnectedTo(name);
     connectedRef.current = name;
+    const offerReq = window.confirm(`${name} has offered ${offer}. Do you want to accept?`)
 
-    connection
-      .setRemoteDescription(new RTCSessionDescription(offer))
-      .then(() => connection.createAnswer())
-      .then(answer => connection.setLocalDescription(answer))
-      .then(() =>
-        send({ type: "answer", answer: connection.localDescription, name })
-      )
-      .catch(e => {
-        console.log({ e });
-        window.alert('An error has occurred.'
-        );
-      });
+    if (offerReq) {
+      connection
+        .setRemoteDescription(new RTCSessionDescription(offer))
+        .then(() => connection.createAnswer())
+        .then(answer => connection.setLocalDescription(answer))
+        .then(() =>
+          send({ type: "answer", answer: connection.localDescription, name })
+        )
+        .catch(e => {
+          console.log({ e });
+          window.alert('An error has occurred.'
+          );
+        });
+    }
   };
 
   //when another user answers to our offer
@@ -161,6 +164,9 @@ function App() {
       case "updateUsers":
         handleUpdateUser(message);
         break;
+      case "offer":
+        handleOffer(message);
+        break;
       case "leave":
         handleLeaveUser(message);
         break;
@@ -171,8 +177,8 @@ function App() {
   }, [socketMessages])
 
   const sendMessage = () => {
-    const data = { type: "offer", name: "LightSalmon", offer: "deez" }
-    webSocket.current.send(JSON.stringify(data));
+    const data = { type: "offer", name: offerTo, offer: input }
+    send(data);
   }
 
   const usersDisplay = users.length > 0 ?
