@@ -1,0 +1,7 @@
+.user {
+    border: 5px solid transparent;
+}
+
+.user-selected {
+    border-color: blue;
+}
