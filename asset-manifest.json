@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/air-chat-client/static/css/main.aba96590.css",
-    "main.js": "/air-chat-client/static/js/main.77b3818c.js",
+    "main.js": "/air-chat-client/static/js/main.289745a8.js",
     "static/js/787.67652929.chunk.js": "/air-chat-client/static/js/787.67652929.chunk.js",
     "index.html": "/air-chat-client/index.html",
     "main.aba96590.css.map": "/air-chat-client/static/css/main.aba96590.css.map",
-    "main.77b3818c.js.map": "/air-chat-client/static/js/main.77b3818c.js.map",
+    "main.289745a8.js.map": "/air-chat-client/static/js/main.289745a8.js.map",
     "787.67652929.chunk.js.map": "/air-chat-client/static/js/787.67652929.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.aba96590.css",
-    "static/js/main.77b3818c.js"
+    "static/js/main.289745a8.js"
   ]
 }
