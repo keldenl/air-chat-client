@@ -153,8 +153,8 @@ function App() {
 
   useEffect(() => {
     // add the websocket url to env in production environment     
-    webSocket.current = new WebSocket("ws://192.168.0.11:9000");
-    // webSocket.current = new WebSocket("ws://air-chat-ws.herokuapp.com");
+    // webSocket.current = new WebSocket("ws://192.168.0.11:9000");
+    webSocket.current = new WebSocket("ws://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
       setSocketMessages(prev => [...prev, data]);
