@@ -6,12 +6,12 @@ import { MyUserProfile } from './components/MyUserProfile';
 import './App.css';
 
 // Use for remote connections
-// const configuration = {
-//   iceServers: [{ url: "stun:stun.1.google.com:19302" }]
-// };
+const configuration = {
+  iceServers: [{ url: "stun:stun.1.google.com:19302" }]
+};
 
 // Use for local connections
-const configuration = null;
+// const configuration = null;
 
 function App() {
   // WebSocket State
@@ -59,11 +59,15 @@ function App() {
 
     // when the browser finds an ice candidate we send it to another peer
     localConnection.onicecandidate = ({ candidate }) => {
-      let connectedTo = connectedRef.current;
+      console.log('found ice candidate')
+      console.log('candidate: ', candidate)
+      console.log('connectedTo', connectedRef.current)
+      let con = connectedRef.current;
 
-      if (candidate && !!connectedTo) {
+      if (candidate && !!con) {
+        console.log('actually do something')
         send({
-          name: connectedTo,
+          name: con,
           type: "candidate",
           candidate
         });
@@ -149,7 +153,8 @@ function App() {
 
   useEffect(() => {
     // add the websocket url to env in production environment     
-    webSocket.current = new WebSocket("ws://localhost:9000");
+    webSocket.current = new WebSocket("ws://192.168.0.11:9000");
+    // webSocket.current = new WebSocket("ws://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
       setSocketMessages(prev => [...prev, data]);
@@ -211,7 +216,7 @@ function App() {
 
     dataChannel.onmessage = handleDataChannelMessageReceived;
     setChannel(dataChannel);
-    setConnectedTo(offerTo)
+    setConnectedTo(offerTo);
 
     connection
       .createOffer()
@@ -219,6 +224,7 @@ function App() {
       .then(() =>
         send({ type: "offer", name: offerTo, offer: connection.localDescription })
       )
+      .then(() => connectedRef.current = offerTo)
       .catch(e => {
         console.error(e);
         window.alert('handleconnection', e)
@@ -226,24 +232,25 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(connectedTo)
+    console.log('connected to updated to: ', connectedTo)
   }, [connectedTo])
 
   //when a user clicks the send message button
   const sendMsg = () => {
     let text = { message: input, name: myData.name };
     let messages = messagesRef.current;
-    let connectedTo = connectedRef.current;
-    let userMessages = messages[connectedTo];
-    if (messages[connectedTo]) {
+    let con = connectedRef.current;
+    console.log(con)
+    let userMessages = messages[con];
+    if (messages[con]) {
       userMessages = [...userMessages, text];
       let newMessages = Object.assign({}, messages, {
-        [connectedTo]: userMessages
+        [con]: userMessages
       });
       messagesRef.current = newMessages;
       setMessages(newMessages);
     } else {
-      userMessages = Object.assign({}, messages, { [connectedTo]: [text] });
+      userMessages = Object.assign({}, messages, { [con]: [text] });
       messagesRef.current = userMessages;
       setMessages(userMessages);
     }
@@ -261,6 +268,11 @@ function App() {
     <p>No devices nearby</p>
 
 
+  useEffect(() => {
+    console.log(messages);
+  }, [messages])
+
+
   return (
     <div className="App">
       <header className="App-header">Air Chat</header>
@@ -273,7 +285,27 @@ function App() {
       <button onClick={handleConnection}>Request Connection</button>
       {isConnected ? (
         <div>
-          <input type="text" value={input} onChange={e => setInput(e.target.value)} />
+          <div>
+            <ul>
+              {messages[connectedTo] && messages[connectedTo].map((msg, i) => {
+                const { message, name } = msg;
+                return (
+                  <li key={`${name}${message}${i}`}>
+                    {name}: {message}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <input type="text" value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                sendMsg();
+                return;
+              }
+            }}
+          />
           <button onClick={sendMsg} disabled={!isConnected}>Send</button>
         </div>
       ) : undefined}
