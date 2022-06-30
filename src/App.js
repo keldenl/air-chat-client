@@ -43,9 +43,9 @@ function App() {
 
   // All WebSocket Handlers
   const handleConnect = (message) => {
-    const { name, ip } = message;
+    const { name, ip, ipCode } = message;
     setSocketOpen(true);
-    setMyData({ name, ip });
+    setMyData({ name, ip, ipCode });
   }
 
   const handleLogin = (message) => {
@@ -155,8 +155,8 @@ function App() {
 
   useEffect(() => {
     // add the websocket url to env in production environment     
-    webSocket.current = new WebSocket("ws://192.168.0.11:9000");
-    // webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
+    // webSocket.current = new WebSocket("ws://192.168.0.11:9000");
+    webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
       setSocketMessages(prev => [...prev, data]);
@@ -262,12 +262,11 @@ function App() {
 
   const usersDisplay = users.length > 0 ?
     <ul>
-      {users.map(user => <li key={user.id}>
-        <User data={user} offerTo={offerTo} setOfferTo={setOfferTo} />
-      </li>)}
-
-    </ul> :
-    <p>No devices nearby</p>
+      {users.map(user =>
+        <User key={user.id} data={user} offerTo={offerTo} setOfferTo={setOfferTo} />
+      )}
+    </ul >
+    : <p>No devices nearby</p>
 
 
   useEffect(() => {
@@ -277,16 +276,19 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        Air Chat
+      <header className="header">
+        <div className='headerLeft'>
+        </div>
+        <h2>AirChat</h2>
+        <div className='headerRight'>
+          {!!offerTo ? <button className='chatButton' onClick={handleConnection}>Request Chat</button> : undefined}
+        </div>
       </header>
       {socketOpen ?
         <div>
-          <div>
-            <h2>Nearby Devices</h2>
+          <div className='usersDisplay'>
             {usersDisplay}
           </div>
-          {!!offerTo ? <button onClick={handleConnection}>Request Connection</button> : undefined}
           {isConnected ? <p>Connected to {connectedTo}</p> : undefined}
           {isConnected ? (
             <div>

@@ -3,11 +3,13 @@ import "./style.css";
 
 export function MyUserProfile({ myData }) {
     const myUserExists = myData != null && Object.keys(myData).length > 0;
+    const { name, ip, ipCode } = myData
     return (
         myUserExists ?
-            <div>
-                <p>You as known as {myData.name}</p>
-                <p>Your IP is {myData.ip}</p>
+            <div className={'appleShadow userProfileContainer'} style={{ backgroundColor: name }}>
+                <p>{name}</p>
+                <p>Share Code: {ipCode}</p>
+                <p>IP: {ip}</p>
             </div>
             : undefined
     )

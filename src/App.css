@@ -1,0 +1,51 @@
+.header {
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+}
+
+.headerLeft,
+.headerRight {
+    flex-basis: 50%;
+    align-self: center;
+    padding: 0 10px;
+}
+
+.headerRight {
+    text-align: right;
+}
+
+.header>h2 {
+    margin: 0;
+    font-weight: 500;
+}
+
+.chatButton {
+    border: none;
+    text-decoration: none;
+    color: rgb(0, 122, 255);
+    font-size: 1.1em;
+    line-height: 1;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s ease-in-out;
+}
+
+.chatButton:hover {
+    color: rgb(10, 132, 255);
+}
+
+.usersDisplay {
+    /* background-color: red; */
+    padding: 10px 0;
+}
+
+.usersDisplay>ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}

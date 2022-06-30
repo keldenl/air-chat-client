@@ -1,0 +1,14 @@
+.userProfileContainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+}
+
+.userProfileContainer>p {
+    margin: 0;
+    color: gray;
+    mix-blend-mode: difference;
+}

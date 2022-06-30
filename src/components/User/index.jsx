@@ -9,8 +9,14 @@ export function User({ data, offerTo, setOfferTo }) {
     }
 
     return (
-        <div onClick={onSetOfferTo} className={`${offerTo === userName ? 'user-selected' : ''} user`}>
+        <li onClick={onSetOfferTo} className={`appleShadow ${offerTo === userName ? 'user-selected' : ''} user`}
+            style={{
+                borderColor: data.userName,
+                ...(offerTo === userName ? { backgroundColor: data.userName } : {})
+            }}
+        >
+            {/* <div > */}
             <p>{userName}</p>
-        </div>
+        </li>
     )
 }
