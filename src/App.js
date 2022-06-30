@@ -7,7 +7,7 @@ import './App.css';
 
 // Use for remote connections
 const configuration = {
-  iceServers: [{ url: "stun:stun.1.google.com:19302" }]
+  iceServers: [{ urls: "stun:stun.1.google.com:19302" }]
 };
 
 // Use for local connections
@@ -78,6 +78,8 @@ function App() {
       let receiveChannel = event.channel;
       receiveChannel.onopen = () => {
         console.log("Data channel is open and ready to be used.");
+        // Receiver is now connected
+        setIsConnected(true);
       };
       receiveChannel.onmessage = handleDataChannelMessageReceived;
       setChannel(receiveChannel);
@@ -130,7 +132,7 @@ function App() {
         .then(answer => connection.setLocalDescription(answer))
         .then(() =>
           send({ type: "answer", answer: connection.localDescription, name })
-        ).then(() => setIsConnected(true))
+        )
         .catch(e => {
           console.log({ e });
           window.alert('An error has occurred.'
@@ -153,8 +155,8 @@ function App() {
 
   useEffect(() => {
     // add the websocket url to env in production environment     
-    // webSocket.current = new WebSocket("ws://192.168.0.11:9000");
-    webSocket.current = new WebSocket("ws://air-chat-ws.herokuapp.com");
+    webSocket.current = new WebSocket("ws://192.168.0.11:9000");
+    // webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
       setSocketMessages(prev => [...prev, data]);
@@ -232,8 +234,8 @@ function App() {
   };
 
   useEffect(() => {
-    console.log('connected to updated to: ', connectedTo)
-  }, [connectedTo])
+    console.log('connection updated to: ', connection)
+  }, [connection])
 
   //when a user clicks the send message button
   const sendMsg = () => {
@@ -275,41 +277,48 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">Air Chat</header>
-      {socketOpen ? <p>Socket opened</p> : undefined}
-      <div>
-        <h2>Nearby Devices</h2>
-        {usersDisplay}
-      </div>
-      {isConnected ? <p>Connected to {connectedTo}</p> : undefined}
-      <button onClick={handleConnection}>Request Connection</button>
-      {isConnected ? (
+      <header className="App-header">
+        Air Chat
+      </header>
+      {socketOpen ?
         <div>
           <div>
-            <ul>
-              {messages[connectedTo] && messages[connectedTo].map((msg, i) => {
-                const { message, name } = msg;
-                return (
-                  <li key={`${name}${message}${i}`}>
-                    {name}: {message}
-                  </li>
-                )
-              })}
-            </ul>
+            <h2>Nearby Devices</h2>
+            {usersDisplay}
           </div>
-          <input type="text" value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                sendMsg();
-                return;
-              }
-            }}
-          />
-          <button onClick={sendMsg} disabled={!isConnected}>Send</button>
+          {!!offerTo ? <button onClick={handleConnection}>Request Connection</button> : undefined}
+          {isConnected ? <p>Connected to {connectedTo}</p> : undefined}
+          {isConnected ? (
+            <div>
+              <div>
+                <ul>
+                  {messages[connectedTo] && messages[connectedTo].map((msg, i) => {
+                    const { message, name } = msg;
+                    return (
+                      <li key={`${name}${message}${i}`}>
+                        {name}: {message}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+              <input type="text" value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    sendMsg();
+                    return;
+                  }
+                }}
+              />
+              <button onClick={sendMsg} disabled={!isConnected}>Send</button>
+            </div>
+          ) : undefined}
+          <MyUserProfile myData={myData} />
         </div>
-      ) : undefined}
-      <MyUserProfile myData={myData} />
+        :
+        <p>Loading...</p>
+      }
     </div>
   );
 }
