@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Autolinker from 'autolinker';
+import * as sanitizeHtml from 'sanitize-html';
 
 import { User } from './components/User';
 import { MyUserProfile } from './components/MyUserProfile';
@@ -7,7 +9,27 @@ import './App.css';
 
 // Use for remote connections
 const configuration = {
-  iceServers: [{ urls: "stun:stun.1.google.com:19302" }]
+  // iceServers: [{ urls: "stun:stun.1.google.com:19302" }]
+  iceServers: [
+    {
+      urls: "stun:openrelay.metered.ca:80",
+    },
+    {
+      urls: "turn:openrelay.metered.ca:80",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+      urls: "turn:openrelay.metered.ca:443",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+      urls: "turn:openrelay.metered.ca:443?transport=tcp",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+  ],
 };
 
 // Use for local connections
@@ -250,7 +272,12 @@ function App() {
 
   //when a user clicks the send message button
   const sendMsg = () => {
-    let text = { message: input, name: myData.name };
+    let text = {
+      message: sanitizeHtml(input, {
+        allowedTags: [],
+        allowedAttributes: {}
+      }), name: myData.name
+    };
     let messages = messagesRef.current;
     let con = connectedRef.current;
     console.log(con)
@@ -318,6 +345,7 @@ function App() {
               <header className="header headerSmall">
                 <div className='headerLeft'>
                 </div>
+                <div className='headerHighlight' style={{ backgroundColor: connectedTo }} />
                 <h3>{connectedTo}</h3>
                 <div className='headerRight'>
                   <button className='chatButton' onClick={() => setShowChat(false)}>Close</button>
@@ -326,10 +354,18 @@ function App() {
               <ul className='chatMsgContainer'>
                 {messages[connectedTo] && messages[connectedTo].map((msg, i) => {
                   const { message, name } = msg;
+                  const messageWithAnchor = Autolinker.link(message);
+                  const hasValidLink = messageWithAnchor !== message;
                   return (
                     <li className={`chatMsg ${name === myData.name ? 'myChatMsg' : ''}`} key={`${name}${message}${i}`}>
                       <p className='chatMsgSender'>{name === myData.name ? 'Me' : name}</p>
-                      <p>{message}</p>
+                      {hasValidLink ?
+                        <p className='chatMsgContent' dangerouslySetInnerHTML={{ __html: messageWithAnchor }} />
+                        :
+                        <p className='chatMsgContent'>
+                          {message}
+                        </p>
+                      }
                     </li>
                   )
                 })}

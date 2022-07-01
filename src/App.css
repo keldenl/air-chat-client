@@ -100,6 +100,15 @@
     flex-grow: 1;
 }
 
+.headerHighlight {
+    width: 10px;
+    height: 10px;
+    aspect-ratio: 1/1;
+    border-radius: 10px;
+    align-self: center;
+    margin-right: 5px;
+}
+
 .chatMsg {
     align-self: flex-start;
     background-color: rgb(10, 132, 255);
@@ -110,15 +119,17 @@
     max-width: 50%;
 }
 
-.chatMsg>p {
-    margin: 0;
-    word-break: break-word;
-}
-
 .chatMsgSender {
     font-size: .7em;
     font-weight: 600;
     opacity: 0.6;
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.chatMsgContent {
+    margin: 0;
+    word-break: break-word;
 }
 
 .myChatMsg {
