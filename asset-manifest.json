@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/air-chat-client/static/css/main.6c941396.css",
-    "main.js": "/air-chat-client/static/js/main.eef2f681.js",
+    "main.css": "/air-chat-client/static/css/main.89319fd8.css",
+    "main.js": "/air-chat-client/static/js/main.75b3eeb6.js",
     "static/js/787.67652929.chunk.js": "/air-chat-client/static/js/787.67652929.chunk.js",
     "index.html": "/air-chat-client/index.html",
     "static/media/index.cjs": "/air-chat-client/static/media/index.cd351d7c31d0d3fccf96.cjs",
-    "main.6c941396.css.map": "/air-chat-client/static/css/main.6c941396.css.map",
-    "main.eef2f681.js.map": "/air-chat-client/static/js/main.eef2f681.js.map",
+    "main.89319fd8.css.map": "/air-chat-client/static/css/main.89319fd8.css.map",
+    "main.75b3eeb6.js.map": "/air-chat-client/static/js/main.75b3eeb6.js.map",
     "787.67652929.chunk.js.map": "/air-chat-client/static/js/787.67652929.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6c941396.css",
-    "static/js/main.eef2f681.js"
+    "static/css/main.89319fd8.css",
+    "static/js/main.75b3eeb6.js"
   ]
 }
