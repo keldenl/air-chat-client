@@ -27,6 +27,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [connection, setConnection] = useState();
   const [channel, setChannel] = useState();
+  const [showChat, setShowChat] = useState(false);
 
   // App State
   const [myData, setMyData] = useState({});
@@ -120,6 +121,7 @@ function App() {
   //when somebody wants to message us
   const handleOffer = ({ offer, name }) => {
     setConnectedTo(name);
+    setShowChat(true);
     connectedRef.current = name;
     const offerReq = window.confirm(`${name} has offered ${offer}. Do you want to accept?`)
 
@@ -155,8 +157,8 @@ function App() {
 
   useEffect(() => {
     // add the websocket url to env in production environment     
-    // webSocket.current = new WebSocket("ws://192.168.0.11:9000");
-    webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
+    webSocket.current = new WebSocket("ws://192.168.0.11:9000");
+    // webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
       console.log('message: ', data)
@@ -243,6 +245,7 @@ function App() {
 
   useEffect(() => {
     console.log('connection updated to: ', connection)
+    setShowChat(true);
   }, [connection])
 
   //when a user clicks the send message button
@@ -274,6 +277,10 @@ function App() {
     return <div ref={elementRef} />;
   };
 
+  useEffect(() => {
+    !showChat && setOfferTo(undefined)
+  }, [showChat])
+
   const usersDisplay = users.length > 0 ?
     <ul>
       {users.map(user =>
@@ -289,7 +296,15 @@ function App() {
         </div>
         <h2>AirChat</h2>
         <div className='headerRight'>
-          {!!offerTo ? <button className='chatButton' onClick={handleConnection}>Request Chat</button> : undefined}
+          {!!offerTo ?
+            <button
+              className='chatButton'
+              onClick={isConnected && offerTo === connectedTo ? () => setShowChat(true) : () => handleConnection()}
+            >
+              {isConnected && offerTo === connectedTo ? 'View Chat' : 'Request Chat'}
+            </button>
+            : undefined
+          }
         </div>
       </header>
       {socketOpen ?
@@ -298,14 +313,14 @@ function App() {
             {usersDisplay}
           </div>
           {isConnected ? <p>Connected to {connectedTo}</p> : undefined}
-          {isConnected ? (
+          {isConnected && showChat ? (
             <div className='chatContainer'>
               <header className="header headerSmall">
                 <div className='headerLeft'>
                 </div>
                 <h2>{connectedTo}</h2>
                 <div className='headerRight'>
-                  <button className='chatButton' onClick={handleConnection}>Close</button>
+                  <button className='chatButton' onClick={() => setShowChat(false)}>Close</button>
                 </div>
               </header>
               <ul className='chatMsgContainer'>

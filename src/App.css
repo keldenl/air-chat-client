@@ -66,6 +66,10 @@
     color: #333;
 }
 
+.chatInput:focus {
+    border-color: rgb(0, 122, 255);
+}
+
 .chatContainer {
     background: white;
     padding-bottom: 20px;
