@@ -268,6 +268,12 @@ function App() {
     setInput("");
   };
 
+  const AlwaysScrollToBottom = () => {
+    const elementRef = useRef();
+    useEffect(() => elementRef.current.scrollIntoView({ behavior: 'smooth' }));
+    return <div ref={elementRef} />;
+  };
+
   const usersDisplay = users.length > 0 ?
     <ul>
       {users.map(user =>
@@ -275,16 +281,6 @@ function App() {
       )}
     </ul >
     : <p>No devices nearby</p>
-
-
-  useEffect(() => {
-    console.log(messages);
-  }, [messages])
-
-  useEffect(() => {
-    console.log('socketMessages: ', socketMessages);
-  }, [socketMessages])
-
 
   return (
     <div className="App">
@@ -303,29 +299,39 @@ function App() {
           </div>
           {isConnected ? <p>Connected to {connectedTo}</p> : undefined}
           {isConnected ? (
-            <div>
-              <div>
-                <ul>
-                  {messages[connectedTo] && messages[connectedTo].map((msg, i) => {
-                    const { message, name } = msg;
-                    return (
-                      <li key={`${name}${message}${i}`}>
-                        {name}: {message}
-                      </li>
-                    )
-                  })}
-                </ul>
+            <div className='chatContainer'>
+              <header className="header headerSmall">
+                <div className='headerLeft'>
+                </div>
+                <h2>{connectedTo}</h2>
+                <div className='headerRight'>
+                  <button className='chatButton' onClick={handleConnection}>Close</button>
+                </div>
+              </header>
+              <ul className='chatMsgContainer'>
+                {messages[connectedTo] && messages[connectedTo].map((msg, i) => {
+                  const { message, name } = msg;
+                  return (
+                    <li className={`chatMsg ${name === myData.name ? 'myChatMsg' : ''}`} key={`${name}${message}${i}`}>
+                      <p className='chatMsgSender'>{name === myData.name ? 'Me' : name}</p>
+                      <p>{message}</p>
+                    </li>
+                  )
+                })}
+                <AlwaysScrollToBottom />
+              </ul>
+              <div className='chatInputContainer'>
+                <input type="text" className='chatInput' value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      sendMsg();
+                      return;
+                    }
+                  }}
+                />
+                <button className='chatButton' onClick={sendMsg} disabled={!isConnected}>Send</button>
               </div>
-              <input type="text" value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    sendMsg();
-                    return;
-                  }
-                }}
-              />
-              <button onClick={sendMsg} disabled={!isConnected}>Send</button>
             </div>
           ) : undefined}
           <MyUserProfile myData={myData} />
