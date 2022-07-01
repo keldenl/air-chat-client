@@ -159,7 +159,12 @@ function App() {
     webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
-      setSocketMessages(prev => [...prev, data]);
+      console.log('message: ', data)
+      setSocketMessages(prev => {
+        console.log('prev: ', prev)
+        console.log('updated array: ', [...prev, data])
+        return [...prev, data]
+      });
     };
     webSocket.current.onclose = () => {
       webSocket.current.close();
@@ -168,8 +173,9 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log('POP')
     const message = socketMessages.pop();
-    console.log(message);
+    // console.log(message);
 
     if (!message) return
     switch (message.type) {
