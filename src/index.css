@@ -5,6 +5,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     color: #333;
     background-color: #eee;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .appleShadow {

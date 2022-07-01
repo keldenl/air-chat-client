@@ -157,8 +157,8 @@ function App() {
 
   useEffect(() => {
     // add the websocket url to env in production environment     
-    webSocket.current = new WebSocket("ws://192.168.0.11:9000");
-    // webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
+    // webSocket.current = new WebSocket("ws://192.168.0.11:9000");
+    webSocket.current = new WebSocket("wss://air-chat-ws.herokuapp.com");
     webSocket.current.onmessage = message => {
       const data = JSON.parse(message.data);
       console.log('message: ', data)
@@ -318,7 +318,7 @@ function App() {
               <header className="header headerSmall">
                 <div className='headerLeft'>
                 </div>
-                <h2>{connectedTo}</h2>
+                <h3>{connectedTo}</h3>
                 <div className='headerRight'>
                   <button className='chatButton' onClick={() => setShowChat(false)}>Close</button>
                 </div>
