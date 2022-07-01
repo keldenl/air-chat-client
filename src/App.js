@@ -173,9 +173,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log('POP')
-    const message = socketMessages.pop();
-    // console.log(message);
+    // Create a copy to not affect the array state
+    const currMessages = [...socketMessages];
+    const message = currMessages.pop();
 
     if (!message) return
     switch (message.type) {
@@ -203,6 +203,8 @@ function App() {
       default:
         break;
     }
+    // Update the socket messages to reflect that it has been handled
+    setSocketMessages(currMessages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketMessages])
 
@@ -278,6 +280,10 @@ function App() {
   useEffect(() => {
     console.log(messages);
   }, [messages])
+
+  useEffect(() => {
+    console.log('socketMessages: ', socketMessages);
+  }, [socketMessages])
 
 
   return (
